@@ -1,0 +1,8 @@
+{
+  "rocketchat": {
+    "integration_url": "https://chat.example.org/hooks/1234/5678"
+  },
+  "gitlab":{
+    "secret_token": "super secret token"
+  }
+}
