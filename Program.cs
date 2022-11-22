@@ -58,6 +58,7 @@ public class Program
                     rchatMessage.Send(client);
                 })
             .WithDescription("Gitlab webhook endpoint")
+            .WithName("Gitlab webhook")
             .WithOpenApi();
 
         app.Run();
