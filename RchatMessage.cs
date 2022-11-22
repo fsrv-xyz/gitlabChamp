@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace gitlabChamp;
@@ -19,8 +17,7 @@ public class RchatMessage
 
     public void Send(HttpClient client)
     {
-        Console.WriteLine(JsonSerializer.Serialize(Message));
-        Console.WriteLine(client.PostAsJsonAsync("", Message).Result);
+        client.PostAsJsonAsync("", Message);
     }
 }
 
