@@ -1,51 +1,36 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using gitlabChamp.Events;
 
 namespace gitlabChamp;
 
-public interface IEvent
-{
-    public IEvent Decode(Dictionary<string, dynamic> data);
-}
-
 public class MessageBody
 {
+    public MessageBody()
+    {
+        DynamicData = new Dictionary<string, dynamic>();
+    }
+
     [JsonPropertyName("event_name")]
     [Required]
-    public string eventNameRaw { get; set; }
+    public string EventName { get; set; } = null!;
 
-    [JsonExtensionData] public Dictionary<string, dynamic> DynamicData { get; set; }
+    [JsonExtensionData] [Required] public Dictionary<string, dynamic> DynamicData { get; set; }
 
-    public IEvent Classify()
+    public Message Classify()
     {
-        return Switch().Decode(DynamicData);
+        return Switch().Parse(DynamicData);
     }
 
     private IEvent Switch()
     {
-        switch (eventNameRaw)
+        switch (EventName)
         {
             case "push":
-                return new PushEvent();
+                return new Push();
             default:
                 return new GenericEvent();
         }
-    }
-}
-
-public class GenericEvent : IEvent
-{
-    public IEvent Decode(Dictionary<string, dynamic> data)
-    {
-        return this;
-    }
-}
-
-public class PushEvent : IEvent
-{
-    public IEvent Decode(Dictionary<string, dynamic> data)
-    {
-        return this;
     }
 }

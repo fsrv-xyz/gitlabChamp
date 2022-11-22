@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,12 +30,13 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapPost("/",
+        app.MapPost("/webhook",
                 (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
                 {
-                    Console.WriteLine(messageBody.Classify());
+                    var body = messageBody.Classify();
+                    var rchatMessage = new RchatMessage(body);
+                    rchatMessage.Send();
                 })
-            .WithName("GetWeatherForecast")
             .WithOpenApi();
 
         app.Run();
