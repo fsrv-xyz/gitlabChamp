@@ -5,6 +5,7 @@ COPY . .
 RUN dotnet publish -c Release -r $RELEASE -o /app
 
 FROM debian:stable-slim as runtime
+RUN apt update && apt install -y ca-certificates
 WORKDIR /app
 COPY --from=build /app .
 
