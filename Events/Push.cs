@@ -21,11 +21,25 @@ public class Push : IEvent
 
         data["commits"].EnumerateArray().ToList().ForEach(commit =>
         {
+            var fields = new List<Field>();
+            foreach (var group in new[] { "added", "modified", "removed" }.ToList())
+            {
+                var changes = commit.GetProperty(group).EnumerateArray().ToList();
+                if (changes.Count > 0)
+                    fields.Add(new Field
+                    {
+                        Title = group,
+                        Value = string.Join("\n", changes)
+                    });
+            }
+
             msg.Attachments.Add(new Attachment
             {
                 Title = commit.GetProperty("title").ToString(),
                 Text = commit.GetProperty("message").ToString(),
-                TitleLink = commit.GetProperty("url").ToString()
+                TitleLink = commit.GetProperty("url").ToString(),
+                Collapsed = true,
+                Fields = fields
             });
         });
 
