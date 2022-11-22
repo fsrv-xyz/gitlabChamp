@@ -17,7 +17,7 @@ public class RchatMessage
 
     public void Send(HttpClient client)
     {
-        client.PostAsJsonAsync("", Message);
+        client.PostAsJsonAsync(string.Empty, Message).Result.EnsureSuccessStatusCode();
     }
 }
 
