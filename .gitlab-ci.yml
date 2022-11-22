@@ -1,8 +1,4 @@
 ---
-include:
-  - { project: fsrvcorp/ci-templates, file: docker-image.yml }
-  - { project: fsrvcorp/ci-templates, file: semantic-versioning.yml }
-
 build:
   image: "mcr.microsoft.com/dotnet/sdk:7.0"
   stage: test
