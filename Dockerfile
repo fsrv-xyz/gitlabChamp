@@ -10,3 +10,4 @@ COPY --from=build /app .
 
 EXPOSE 5000
 ENTRYPOINT ["/app/gitlabChamp"]
+CMD ["--urls", "http://0.0.0.0:5000"]
