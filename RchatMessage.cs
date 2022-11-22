@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,9 +17,10 @@ public class RchatMessage
         Message = message;
     }
 
-    public void Send()
+    public void Send(HttpClient client)
     {
         Console.WriteLine(JsonSerializer.Serialize(Message));
+        Console.WriteLine(client.PostAsJsonAsync("", Message).Result);
     }
 }
 
@@ -25,7 +28,17 @@ public struct Message
 {
     [JsonPropertyName("text")] public string Text { get; set; } = string.Empty;
 
-    [JsonPropertyName("attachments")] public List<Attachment> Attachments { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("username")]
+    public string Username { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("icon_url")]
+    public string IconUrl { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("attachments")]
+    public List<Attachment> Attachments { get; set; }
 
     public Message()
     {
@@ -35,9 +48,23 @@ public struct Message
 
 public struct Attachment
 {
-    [JsonPropertyName("title")] public string Title { get; set; }
-    [JsonPropertyName("title_link")] public string TitleLink { get; set; }
-    [JsonPropertyName("text")] public string Text { get; set; }
-    [JsonPropertyName("color")] public string Color { get; set; }
-    [JsonPropertyName("image_url")] public string ImageUrl { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("title_link")]
+    public string TitleLink { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("color")]
+    public string Color { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("image_url")]
+    public string ImageUrl { get; set; }
 }

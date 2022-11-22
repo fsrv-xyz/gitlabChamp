@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using gitlabChamp.Events;
 
@@ -9,14 +10,14 @@ public class MessageBody
 {
     public MessageBody()
     {
-        DynamicData = new Dictionary<string, dynamic>();
+        DynamicData = new Dictionary<string, JsonElement>();
     }
 
     [JsonPropertyName("event_name")]
     [Required]
     public string EventName { get; set; } = null!;
 
-    [JsonExtensionData] [Required] public Dictionary<string, dynamic> DynamicData { get; set; }
+    [JsonExtensionData] [Required] public Dictionary<string, JsonElement> DynamicData { get; set; }
 
     public Message Classify()
     {
