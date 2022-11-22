@@ -14,7 +14,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
         var config = new ConfigurationBuilder()
             .SetBasePath(Environment.CurrentDirectory)
             .AddJsonFile("config.json", true, false)
@@ -31,10 +31,9 @@ public class Program
 
         builder.Services.AddHttpClient("rocketchat", httpClient =>
         {
-            // TODO: Get this from config
-            httpClient.BaseAddress =
-                new Uri(
-                    "");
+            var rocketchatUrl = config.GetValue<string>("rocketchat:integration_url");
+            if (rocketchatUrl == null) throw new Exception("rocketchat:integration_url is not set");
+            httpClient.BaseAddress = new Uri(rocketchatUrl);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
         });
 
@@ -48,16 +47,17 @@ public class Program
         }
 
         app.UseAuthorization();
-        
 
         app.MapPost("/webhook",
                 (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
                 {
-                    var client = httpContext.RequestServices.GetRequiredService<IHttpClientFactory>().CreateClient("rocketchat");
+                    var client = httpContext.RequestServices.GetRequiredService<IHttpClientFactory>()
+                        .CreateClient("rocketchat");
                     var body = messageBody.Classify();
                     var rchatMessage = new RchatMessage(body);
                     rchatMessage.Send(client);
                 })
+            .WithDescription("Gitlab webhook endpoint")
             .WithOpenApi();
 
         app.Run();
