@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-ARG RELEASE="linux-arm64"
+ARG RELEASE="linux-x64"
 WORKDIR /source
 COPY . .
 RUN dotnet publish -c Release -r $RELEASE -o /app
