@@ -21,6 +21,8 @@ public class Program
             .AddEnvironmentVariables()
             .Build();
 
+        var rocketchatUrl = config.GetValue<string>("rocketchat:integration_url");
+        if (rocketchatUrl == null) throw new Exception("rocketchat:integration_url is not set");
 
         // Add services to the container.
         builder.Services.AddAuthorization();
@@ -31,8 +33,6 @@ public class Program
 
         builder.Services.AddHttpClient("rocketchat", httpClient =>
         {
-            var rocketchatUrl = config.GetValue<string>("rocketchat:integration_url");
-            if (rocketchatUrl == null) throw new Exception("rocketchat:integration_url is not set");
             httpClient.BaseAddress = new Uri(rocketchatUrl);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
         });
