@@ -15,7 +15,8 @@ public class Push : IEvent
         data.TryGetValue("user_name", out var userName);
         data.TryGetValue("user_avatar", out var userAvatar);
 
-        msg.Text = $"Push Event @ [{projectName}]({projectUrl})";
+        var projectNameLinkable = projectName.ToString().Replace("_", "-");
+        msg.Text = $"Push Event @ [{projectNameLinkable}]({projectUrl})";
         msg.Username = $"{userName.ToString()} @ gitlab";
         msg.IconUrl = userAvatar.ToString();
 

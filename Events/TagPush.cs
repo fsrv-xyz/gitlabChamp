@@ -18,7 +18,8 @@ public class TagPush : IEvent
 
         var tagName = refName.ToString().Split('/').Last();
 
-        msg.Text = $"New Tag \"{tagName}\" @ [{projectName}]({projectUrl})";
+        var projectNameLinkable = projectName.ToString().Replace("_", "-");
+        msg.Text = $"New Tag \"{tagName}\" @ [{projectNameLinkable}]({projectUrl})";
         msg.Username = $"{userName.ToString()} @ gitlab";
         msg.IconUrl = userAvatar.ToString();
 
