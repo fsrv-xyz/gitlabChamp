@@ -30,6 +30,8 @@ public class MessageBody
         {
             case "push":
                 return new Push();
+            case "tag_push":
+                return new TagPush();
             default:
                 return new GenericEvent();
         }

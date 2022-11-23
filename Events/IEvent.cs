@@ -12,6 +12,9 @@ public class GenericEvent : IEvent
 {
     public Message Parse(Dictionary<string, JsonElement> data)
     {
-        return new Message { Text = "Generic Event" };
+        return new Message
+        {
+            Text = "Generic Event"
+        };
     }
 }

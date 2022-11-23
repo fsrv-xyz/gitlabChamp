@@ -11,10 +11,11 @@ public class Push : IEvent
         var msg = new Message();
 
         data["project"].TryGetProperty("path_with_namespace", out var projectName);
+        data["project"].TryGetProperty("homepage", out var projectUrl);
         data.TryGetValue("user_name", out var userName);
         data.TryGetValue("user_avatar", out var userAvatar);
 
-        msg.Text = $"Push Event @ {projectName}";
+        msg.Text = $"Push Event @ [{projectName}]({projectUrl})";
         msg.Username = $"{userName.ToString()} @ gitlab";
         msg.IconUrl = userAvatar.ToString();
 
