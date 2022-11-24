@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -67,25 +68,29 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapPost("/webhook",
-                (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
+        app.MapPost("/webhook", (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
+            {
+                if (gitlabSecretToken != null && httpContext.Request.Headers["X-Gitlab-Token"] != gitlabSecretToken)
                 {
-                    if (gitlabSecretToken != null && httpContext.Request.Headers["X-Gitlab-Token"] != gitlabSecretToken)
-                    {
-                        httpContext.Response.StatusCode = 403;
-                        return Task.CompletedTask;
-                    }
-
-                    var client = httpContext.RequestServices.GetRequiredService<IHttpClientFactory>()
-                        .CreateClient("rocketchat");
-                    var body = messageBody.Classify();
-                    var rchatMessage = new RchatMessage(body);
-
-                    rchatMessage.Send(client);
-
-                    httpContext.Response.StatusCode = 201;
+                    httpContext.Response.StatusCode = 403;
                     return Task.CompletedTask;
-                })
+                }
+
+                var client = httpContext.RequestServices.GetRequiredService<IHttpClientFactory>()
+                    .CreateClient("rocketchat");
+                var body = messageBody.Classify();
+                var rchatMessage = new RchatMessage(body);
+
+                var rocketchatMessageResponse = rchatMessage.Send(client);
+                var response = new Dictionary<string, object>
+                {
+                    { "success", rocketchatMessageResponse.IsSuccessStatusCode },
+                    { "status", rocketchatMessageResponse.StatusCode },
+                    { "body", rocketchatMessageResponse.Content.ReadAsStringAsync().Result }
+                };
+
+                return httpContext.Response.WriteAsJsonAsync(response);
+            })
             .WithDescription("Gitlab webhook endpoint")
             .WithName("Gitlab webhook")
             .WithOpenApi();

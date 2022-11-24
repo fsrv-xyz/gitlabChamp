@@ -11,23 +11,19 @@ public class RchatMessage
 {
     protected Message Message;
 
-
     public RchatMessage(Message message)
     {
         Message = message;
     }
 
-    public void Send(HttpClient client)
+    public HttpResponseMessage Send(HttpClient client)
     {
         SentrySdk.AddBreadcrumb(
             category: "RchatMessage",
-            message: JsonSerializer.Serialize(Message, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            }),
+            message: JsonSerializer.Serialize(Message, new JsonSerializerOptions { WriteIndented = true }),
             type: "debug",
             level: BreadcrumbLevel.Info);
-        client.PostAsJsonAsync(string.Empty, Message).Result.EnsureSuccessStatusCode();
+        return client.PostAsJsonAsync(string.Empty, Message).Result;
     }
 }
 
