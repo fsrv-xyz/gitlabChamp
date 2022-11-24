@@ -23,7 +23,7 @@ public class MergeRequest : IEvent
 
         var verb = mr.Action switch
         {
-            "open" => ":mailbox_with_mail: New",
+            var x when x.EndsWith("open") => ":mailbox_with_mail: New",
             "close" => ":closed_book: Closed",
             "merge" => ":checkered_flag: Merged",
             "approved" => ":white_check_mark: Approved",
