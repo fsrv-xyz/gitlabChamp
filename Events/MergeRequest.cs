@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -10,9 +8,9 @@ public class MergeRequest : IEvent
 {
     public Message Parse(JsonObject data)
     {
-        var project = data["project"].Deserialize<MessageBody.Project>();
-        var user = data["user"].Deserialize<MessageBody.User>();
-        var mr = data["object_attributes"].Deserialize<MessageBody.MergeRequestAttributes>();
+        var project = data["project"].Deserialize<GitlabHookData.Project>();
+        var user = data["user"].Deserialize<GitlabHookData.User>();
+        var mr = data["object_attributes"].Deserialize<GitlabHookData.MergeRequestAttributes>();
 
         var fields = new List<Field>
         {

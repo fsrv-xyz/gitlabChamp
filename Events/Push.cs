@@ -8,9 +8,9 @@ public class Push : IEvent
 {
     public Message Parse(JsonObject data)
     {
-        var project = data["project"].Deserialize<MessageBody.Project>();
-        var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
-        var user = data.Deserialize<MessageBody.InlineUserDetails>();
+        var project = data["project"].Deserialize<GitlabHookData.Project>();
+        var commits = data["commits"].Deserialize<List<GitlabHookData.Commit>>() ?? new List<GitlabHookData.Commit>();
+        var user = data.Deserialize<GitlabHookData.InlineUserDetails>();
 
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");

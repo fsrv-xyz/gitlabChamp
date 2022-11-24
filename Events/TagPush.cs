@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -10,9 +9,9 @@ public class TagPush : IEvent
 {
     public Message Parse(JsonObject data)
     {
-        var project = data["project"].Deserialize<MessageBody.Project>();
-        var user = data.Deserialize<MessageBody.InlineUserDetails>();
-        var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
+        var project = data["project"].Deserialize<GitlabHookData.Project>();
+        var user = data.Deserialize<GitlabHookData.InlineUserDetails>();
+        var commits = data["commits"].Deserialize<List<GitlabHookData.Commit>>() ?? new List<GitlabHookData.Commit>();
 
         // get tag name
         data.TryGetPropertyValue("ref", out var refName);
@@ -32,7 +31,7 @@ public class TagPush : IEvent
         var stats = new Dictionary<string, uint>();
         commits.ForEach(commit =>
         {
-            var author = commit.DynamicData["author"].Deserialize<MessageBody.User>();
+            var author = commit.DynamicData["author"].Deserialize<GitlabHookData.User>();
             if (stats.ContainsKey(author.Name))
                 stats[author.Name]++;
             else
