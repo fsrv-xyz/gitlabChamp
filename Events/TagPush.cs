@@ -23,7 +23,7 @@ public class TagPush : IEvent
 
         var msg = new Message
         {
-            Text = $"New Tag \"{tagName}\" @ [{projectNameLinkable}]({project.Homepage})",
+            Text = $":label: New Tag \"{tagName}\" @ [{projectNameLinkable}]({project.Homepage})",
             Username = $"{user.Name} @ gitlab",
             IconUrl = user.Avatar
         };
@@ -47,7 +47,7 @@ public class TagPush : IEvent
             Fields = stats.Select(x => new Field
             {
                 Title = x.Key,
-                Value = x.Value + (x.Value > 1 ? " commits" : "commit")
+                Value = x.Value + " commit" + (x.Value > 1 ? "s" : "")
             }).ToList()
         });
 
