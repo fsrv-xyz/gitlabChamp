@@ -11,7 +11,7 @@ public class TagPush : IEvent
     public Message Parse(JsonObject data)
     {
         var project = data["project"].Deserialize<MessageBody.Project>();
-        var user = data.Deserialize<MessageBody.UserDetails>();
+        var user = data.Deserialize<MessageBody.InlineUserDetails>();
         var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
 
         // get tag name
@@ -32,12 +32,11 @@ public class TagPush : IEvent
         var stats = new Dictionary<string, uint>();
         commits.ForEach(commit =>
         {
-            var author = commit.DynamicData["author"]?["name"].Deserialize<string>();
-            Console.WriteLine(author);
-            if (stats.ContainsKey(author))
-                stats[author]++;
+            var author = commit.DynamicData["author"].Deserialize<MessageBody.User>();
+            if (stats.ContainsKey(author.Name))
+                stats[author.Name]++;
             else
-                stats.Add(author, 1);
+                stats.Add(author.Name, 1);
         });
 
         // add commit statistics to message

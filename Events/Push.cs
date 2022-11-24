@@ -10,7 +10,7 @@ public class Push : IEvent
     {
         var project = data["project"].Deserialize<MessageBody.Project>();
         var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
-        var user = data.Deserialize<MessageBody.UserDetails>();
+        var user = data.Deserialize<MessageBody.InlineUserDetails>();
 
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
