@@ -17,7 +17,7 @@ public class Push : IEvent
 
         var msg = new Message
         {
-            Text = $"Push Event @ [{projectNameLinkable}]({project.Homepage})",
+            Text = $":pushpin: Push Event @ [{projectNameLinkable}]({project.Homepage})",
             Username = $"{user.Name} @ gitlab",
             IconUrl = user.Avatar
         };
