@@ -1,38 +1,46 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace gitlabChamp.Events;
 
 public class TagPush : IEvent
 {
-    public Message Parse(Dictionary<string, JsonElement> data)
+    public Message Parse(JsonObject data)
     {
-        var msg = new Message();
+        var project = data["project"].Deserialize<MessageBody.Project>();
+        var user = data.Deserialize<MessageBody.UserDetails>();
+        var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
 
-        data["project"].TryGetProperty("path_with_namespace", out var projectName);
-        data["project"].TryGetProperty("homepage", out var projectUrl);
-        data.TryGetValue("user_name", out var userName);
-        data.TryGetValue("user_avatar", out var userAvatar);
-        data.TryGetValue("ref", out var refName);
+        // get tag name
+        data.TryGetPropertyValue("ref", out var refName);
+        var tagName = refName?.ToString().Split('/').Last();
 
-        var tagName = refName.ToString().Split('/').Last();
+        // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
+        var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
-        var projectNameLinkable = projectName.ToString().Replace("_", "-");
-        msg.Text = $"New Tag \"{tagName}\" @ [{projectNameLinkable}]({projectUrl})";
-        msg.Username = $"{userName.ToString()} @ gitlab";
-        msg.IconUrl = userAvatar.ToString();
-
-        var stats = new Dictionary<string, uint>();
-        data["commits"].EnumerateArray().ToList().ForEach(commit =>
+        var msg = new Message
         {
-            var author = commit.GetProperty("author").GetProperty("name").ToString();
+            Text = $"New Tag \"{tagName}\" @ [{projectNameLinkable}]({project.Homepage})",
+            Username = $"{user.Name} @ gitlab",
+            IconUrl = user.Avatar
+        };
+
+        // collect commit statistics
+        var stats = new Dictionary<string, uint>();
+        commits.ForEach(commit =>
+        {
+            var author = commit.DynamicData["author"]?["name"].Deserialize<string>();
+            Console.WriteLine(author);
             if (stats.ContainsKey(author))
                 stats[author]++;
             else
                 stats.Add(author, 1);
         });
 
+        // add commit statistics to message
         msg.Attachments.Add(new Attachment
         {
             Collapsed = true,
@@ -40,7 +48,7 @@ public class TagPush : IEvent
             Fields = stats.Select(x => new Field
             {
                 Title = x.Key,
-                Value = x.Value.ToString() + " commit" + (x.Value > 1 ? "s" : "")
+                Value = x.Value + (x.Value > 1 ? " commits" : "commit")
             }).ToList()
         });
 

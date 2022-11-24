@@ -1,16 +1,15 @@
-using System.Collections.Generic;
-using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace gitlabChamp.Events;
 
 public interface IEvent
 {
-    public Message Parse(Dictionary<string, JsonElement> data);
+    public Message Parse(JsonObject data);
 }
 
 public class GenericEvent : IEvent
 {
-    public Message Parse(Dictionary<string, JsonElement> data)
+    public Message Parse(JsonObject data)
     {
         return new Message
         {

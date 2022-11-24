@@ -1,33 +1,35 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace gitlabChamp.Events;
 
 public class Push : IEvent
 {
-    public Message Parse(Dictionary<string, JsonElement> data)
+    public Message Parse(JsonObject data)
     {
-        var msg = new Message();
+        var project = data["project"].Deserialize<MessageBody.Project>();
+        var commits = data["commits"].Deserialize<List<MessageBody.Commit>>() ?? new List<MessageBody.Commit>();
+        var user = data.Deserialize<MessageBody.UserDetails>();
 
-        data["project"].TryGetProperty("path_with_namespace", out var projectName);
-        data["project"].TryGetProperty("homepage", out var projectUrl);
-        data.TryGetValue("user_name", out var userName);
-        data.TryGetValue("user_avatar", out var userAvatar);
+        // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
+        var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
-        var projectNameLinkable = projectName.ToString().Replace("_", "-");
-        msg.Text = $"Push Event @ [{projectNameLinkable}]({projectUrl})";
-        msg.Username = $"{userName.ToString()} @ gitlab";
-        msg.IconUrl = userAvatar.ToString();
+        var msg = new Message
+        {
+            Text = $"Push Event @ [{projectNameLinkable}]({project.Homepage})",
+            Username = $"{user.Name} @ gitlab",
+            IconUrl = user.Avatar
+        };
 
-
-        data["commits"].EnumerateArray().ToList().ForEach(commit =>
+        // add commits details
+        commits.ForEach(commit =>
         {
             var fields = new List<Field>();
-            foreach (var group in new[] { "added", "modified", "removed" }.ToList())
+            foreach (var group in new List<string> { "added", "modified", "removed" })
             {
-                var changes = commit.GetProperty(group).EnumerateArray().ToList();
-                if (changes.Count > 0)
+                var changes = commit.DynamicData[group].Deserialize<List<string>>();
+                if (changes?.Count > 0)
                     fields.Add(new Field
                     {
                         Title = group,
@@ -37,9 +39,9 @@ public class Push : IEvent
 
             msg.Attachments.Add(new Attachment
             {
-                Title = commit.GetProperty("title").ToString(),
-                Text = commit.GetProperty("message").ToString(),
-                TitleLink = commit.GetProperty("url").ToString(),
+                Title = commit.Title,
+                Text = commit.Message,
+                TitleLink = commit.Url,
                 Collapsed = true,
                 Fields = fields
             });
