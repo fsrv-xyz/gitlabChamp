@@ -72,6 +72,15 @@ public class Program
 
         app.UseAuthorization();
 
+        app.MapGet("/-/health", httpContext =>
+            {
+                httpContext.Response.StatusCode = 200;
+                return Task.CompletedTask;
+            })
+            .WithDescription("Health check endpoint")
+            .WithName("HealthCheck")
+            .WithOpenApi();
+
         app.MapPost("/webhook", (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
             {
                 if (gitlabSecretToken != null && httpContext.Request.Headers["X-Gitlab-Token"] != gitlabSecretToken)
