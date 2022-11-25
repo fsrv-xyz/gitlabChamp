@@ -55,6 +55,10 @@ public class Program
         });
 
         var app = builder.Build();
+        app.Logger.Log(
+            LogLevel.Information,
+            $"Starting gitlabChamp version: {typeof(Program).Assembly.GetName().Version}"
+        );
         app.UseSentryTracing();
 
         // Configure the HTTP request pipeline.
