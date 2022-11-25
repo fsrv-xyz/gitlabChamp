@@ -13,6 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="6.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0"/>
         <PackageReference Include="Sentry.AspNetCore" Version="3.24.0"/>
         <PackageReference Include="Sentry.DiagnosticSource" Version="3.24.0"/>

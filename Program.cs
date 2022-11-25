@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sentry;
@@ -26,7 +27,7 @@ public class Program
             o.DiagnosticLevel = SentryLevel.Debug;
             o.SampleRate = 1;
             o.AddDiagnosticSourceIntegration();
-            o.AddTransactionProcessor(new FilterHealthCheck()); // used to filter out health check request transactions
+            o.AddTransactionProcessor(new HealthCheckTransactionFilter());
             o.Debug = true;
         });
 
@@ -56,6 +57,10 @@ public class Program
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
         });
 
+        // Add health checks
+        builder.Services.AddHealthChecks()
+            .AddUrlGroup(new Uri(rocketchatUrl), "rocketchat", HealthStatus.Unhealthy);
+
         var app = builder.Build();
         app.Logger.Log(
             LogLevel.Information,
@@ -72,17 +77,10 @@ public class Program
 
         app.UseHttpLogging();
 
-        app.UseAuthorization();
+        // Map health check endpoint
+        app.MapHealthChecks("/-/health");
 
-        app.MapGet("/-/health", httpContext =>
-            {
-                httpContext.Response.StatusCode = 200;
-                return Task.CompletedTask;
-            })
-            .WithDescription("Health check endpoint")
-            .WithName("HealthCheck")
-            .WithOpenApi();
-
+        // Map gitlab webhook endpoint
         app.MapPost("/webhook", (HttpContext httpContext, [FromBody] MessageBody messageBody) =>
             {
                 if (gitlabSecretToken != null && httpContext.Request.Headers["X-Gitlab-Token"] != gitlabSecretToken)
