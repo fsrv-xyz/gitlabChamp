@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using gitlabChamp.SentryProcessors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ public class Program
             o.DiagnosticLevel = SentryLevel.Debug;
             o.SampleRate = 1;
             o.AddDiagnosticSourceIntegration();
+            o.AddTransactionProcessor(new FilterHealthCheck()); // used to filter out health check request transactions
             o.Debug = true;
         });
 
