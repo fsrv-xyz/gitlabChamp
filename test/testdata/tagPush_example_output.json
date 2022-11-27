@@ -1,0 +1,18 @@
+{
+  "text": ":label: New Tag \"v1.0.0\" @ [jsmith/example](http://example.com/jsmith/example)",
+  "username": "John Smith @ gitlab",
+  "icon_url": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+  "attachments": [
+    {
+      "title": "Authors",
+      "collapsed": true,
+      "fields": [
+        {
+          "title": "John Smith",
+          "value": "1 commit",
+          "short": false
+        }
+      ]
+    }
+  ]
+}
