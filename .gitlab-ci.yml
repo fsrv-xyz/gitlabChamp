@@ -50,11 +50,8 @@ test-with-coverage:
             --logger:"$LOGGER_FLAG"'
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/cobertura/*/coverage.cobertura.xml
       - $CI_PROJECT_DIR/junit/junit-test-result.xml
     reports:
-      cobertura:
-        - $CI_PROJECT_DIR/cobertura/*/coverage.cobertura.xml
       junit:
         - $CI_PROJECT_DIR/junit/junit-test-result.xml
 
