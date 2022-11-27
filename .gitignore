@@ -1,2 +1,2 @@
-/config.json
-/testdata/*
+src/GitlabChamp/config.json
+src/GitlabChamp/testdata/
