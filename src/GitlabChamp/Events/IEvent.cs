@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace gitlabChamp.Events;
+namespace GitlabChamp.Events;
 
 public interface IEvent
 {

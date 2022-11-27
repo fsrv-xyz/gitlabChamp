@@ -2,7 +2,7 @@ using System.Linq;
 using Sentry;
 using Sentry.Extensibility;
 
-namespace gitlabChamp.SentryProcessors;
+namespace GitlabChamp.SentryProcessors;
 
 public class HealthCheckTransactionFilter : ISentryTransactionProcessor
 {

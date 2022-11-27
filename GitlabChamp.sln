@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{CC4006C0-4C0B-4106-B506-CAF03859728C}"
+EndProject
+Project("{EEF08B0F-CE23-4D9B-AFCA-2F770702C9E0}") = "GitlabChamp", "src\GitlabChamp\GitlabChamp.csproj", "{47B0AF01-8298-48B8-AA4C-DA27AD2DB2A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC4006C0-4C0B-4106-B506-CAF03859728C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC4006C0-4C0B-4106-B506-CAF03859728C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC4006C0-4C0B-4106-B506-CAF03859728C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC4006C0-4C0B-4106-B506-CAF03859728C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47B0AF01-8298-48B8-AA4C-DA27AD2DB2A1}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{47B0AF01-8298-48B8-AA4C-DA27AD2DB2A1}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{47B0AF01-8298-48B8-AA4C-DA27AD2DB2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B0AF01-8298-48B8-AA4C-DA27AD2DB2A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

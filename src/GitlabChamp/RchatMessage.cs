@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Sentry;
 
-namespace gitlabChamp;
+namespace GitlabChamp;
 
 public class RchatMessage
 {

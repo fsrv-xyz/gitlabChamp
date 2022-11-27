@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace gitlabChamp;
+namespace GitlabChamp;
 
 public struct GitlabHookData
 {
