@@ -47,8 +47,8 @@ test-with-coverage:
             -r $CI_PROJECT_DIR/cobertura
             --collect:"$COVERAGE_FLAG"
             --test-adapter-path:.
-            --logger:"$LOGGER_FLAG"'
-            ./test
+            --logger:"$LOGGER_FLAG"
+            ./test'
   artifacts:
     paths:
       - $CI_PROJECT_DIR/test/junit/junit-test-result.xml
