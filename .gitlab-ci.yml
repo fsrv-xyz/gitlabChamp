@@ -44,17 +44,17 @@ test-with-coverage:
   script:
     - 'dotnet test
             -c $CONFIGURATION
-            -r $CI_PROJECT_DIR/cobertura
             --collect:"$COVERAGE_FLAG"
             --test-adapter-path:.
             --logger:"$LOGGER_FLAG"
             ./test'
   artifacts:
-    paths:
-      - $CI_PROJECT_DIR/test/junit/junit-test-result.xml
     reports:
       junit:
-        - $CI_PROJECT_DIR/test/junit/junit-test-result.xml
+        - junit/junit-test-result.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: test/TestResults/*/coverage.cobertura.xml
 
 semantic release:
   image: registry.fsrv.services/fsrvcorp/container/payipi:latest
