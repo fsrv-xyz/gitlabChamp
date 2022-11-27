@@ -37,21 +37,28 @@ docker build:
 test-with-coverage:
   image: "mcr.microsoft.com/dotnet/sdk:7.0"
   stage: test
-  variables:
-    CONFIGURATION: "Debug"
-    COVERAGE_FLAG: "XPlat Code Coverage"
-    LOGGER_FLAG: "junit;LogFilePath=$CI_PROJECT_DIR/junit/junit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-  script:
-    - 'dotnet test
-            -c $CONFIGURATION
-            --collect:"$COVERAGE_FLAG"
-            --test-adapter-path:.
-            --logger:"$LOGGER_FLAG"
-            ./test'
+  before_script:
+    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+  script: 
+    - >-
+      dotnet test \
+        -c Debug \
+        --collect:"XPlat Code Coverage" \
+        --test-adapter-path:. \
+        --logger:"junit;LogFilePath=./junit/junit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
+        -p:CollectCoverage=true
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:Html;
+    - cat ./Reports_Coverage/Summary.txt
+    - echo 'End Summary'
+  coverage: /Line coverage[\s\S].+%/
   artifacts:
+    paths:
+      - ./**/*test-result.xml
+      - ./**/*coverage.cobertura.xml
     reports:
       junit:
-        - junit/junit-test-result.xml
+        - test/junit/junit-test-result.xml
       coverage_report:
         coverage_format: cobertura
         path: test/TestResults/*/coverage.cobertura.xml
