@@ -11,5 +11,5 @@ WORKDIR /app
 COPY --from=build /app .
 
 EXPOSE 5000
-ENTRYPOINT ["/app/gitlabChamp"]
+ENTRYPOINT ["/app/GitlabChamp"]
 CMD ["--urls", "http://0.0.0.0:5000"]
