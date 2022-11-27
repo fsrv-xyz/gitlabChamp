@@ -1,0 +1,13 @@
+{
+  "text": ":pushpin: Push Event @ [mike/diaspora](http://example.com/mike/diaspora)",
+  "username": "John Smith @ gitlab",
+  "icon_url": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+  "attachments": [
+    {
+      "title_link": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "text": "Add simple search to projects in public area",
+      "collapsed": true,
+      "fields": []
+    }
+  ]
+}

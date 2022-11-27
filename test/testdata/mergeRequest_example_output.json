@@ -1,0 +1,28 @@
+{
+  "text": ":mailbox_with_mail: New merge request [#1](http://example.com/diaspora/merge_requests/1) in [gitlabhq/gitlab-test](http://example.com/gitlabhq/gitlab-test)",
+  "username": "Administrator @ gitlab",
+  "icon_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon",
+  "attachments": [
+    {
+      "title": "Details",
+      "collapsed": true,
+      "fields": [
+        {
+          "title": "Title",
+          "value": "MS-Viewport",
+          "short": false
+        },
+        {
+          "title": "Source",
+          "value": "ms-viewport",
+          "short": false
+        },
+        {
+          "title": "Target",
+          "value": "master",
+          "short": false
+        }
+      ]
+    }
+  ]
+}
