@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using gitlabChamp.Events;
+using GitlabChamp.Events;
 
-namespace gitlabChamp;
+namespace GitlabChamp;
 
 public class MessageBody
 {

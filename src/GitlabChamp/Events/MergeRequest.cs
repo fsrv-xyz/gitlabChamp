@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace gitlabChamp.Events;
+namespace GitlabChamp.Events;
 
 public class MergeRequest : IEvent
 {
