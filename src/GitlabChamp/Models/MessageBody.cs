@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using GitlabChamp.Events;
 
-namespace GitlabChamp;
+namespace GitlabChamp.Models;
 
 public class MessageBody
 {
@@ -18,7 +18,7 @@ public class MessageBody
 
     [JsonExtensionData] [Required] public JsonObject DynamicData { get; set; }
 
-    public Message Classify()
+    public Message ToMessage()
     {
         return Switch().Parse(DynamicData);
     }

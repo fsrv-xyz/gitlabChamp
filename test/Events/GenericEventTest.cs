@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using GitlabChamp;
 using GitlabChamp.Events;
+using GitlabChamp.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace test.Events;
