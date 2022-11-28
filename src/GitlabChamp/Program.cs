@@ -1,8 +1,10 @@
 using System;
-using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using GitlabChamp.SentryProcessors;
+using GitlabChamp.Clients;
+using GitlabChamp.Models;
+using GitlabChamp.Processors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,16 +54,18 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddHttpClient("rocketchat", httpClient =>
+        builder.Services.AddSingleton<IRocketChatClient, RocketChatClient>();
+        builder.Services.AddHttpClient<IRocketChatClient, RocketChatClient>(client =>
             {
-                httpClient.BaseAddress = new Uri(rocketchatUrl);
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
+                client.BaseAddress = new Uri(rocketchatUrl);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
             })
             .AddPolicyHandler(Policy<HttpResponseMessage>
                 .Handle<HttpRequestException>()
                 .OrResult(msg => !msg.IsSuccessStatusCode)
                 .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
             );
+
 
         // Add health checks
         builder.Services.AddHealthChecks()
@@ -91,24 +95,13 @@ public class Program
             {
                 if (gitlabSecretToken != null && httpContext.Request.Headers["X-Gitlab-Token"] != gitlabSecretToken)
                 {
-                    httpContext.Response.StatusCode = 403;
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return Task.CompletedTask;
                 }
 
-                var client = httpContext.RequestServices.GetRequiredService<IHttpClientFactory>()
-                    .CreateClient("rocketchat");
-                var body = messageBody.Classify();
-                var rchatMessage = new RchatMessage(body);
-
-                var rocketchatMessageResponse = rchatMessage.Send(client);
-                var response = new Dictionary<string, object>
-                {
-                    { "success", rocketchatMessageResponse.IsSuccessStatusCode },
-                    { "status", rocketchatMessageResponse.StatusCode },
-                    { "body", rocketchatMessageResponse.Content.ReadAsStringAsync().Result }
-                };
-
-                return httpContext.Response.WriteAsJsonAsync(response);
+                var rocketChatClient = httpContext.RequestServices.GetRequiredService<IRocketChatClient>();
+                var rocketChatMessageResponse = rocketChatClient.SendMessage(messageBody.ToMessage());
+                return httpContext.Response.WriteAsJsonAsync(rocketChatMessageResponse);
             })
             .WithDescription("Gitlab webhook endpoint")
             .WithName("Gitlab webhook")

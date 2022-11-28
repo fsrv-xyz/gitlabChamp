@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using GitlabChamp;
 using GitlabChamp.Events;
+using GitlabChamp.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace test;

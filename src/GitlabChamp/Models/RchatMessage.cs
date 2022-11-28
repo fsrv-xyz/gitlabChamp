@@ -1,31 +1,7 @@
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Sentry;
 
-namespace GitlabChamp;
-
-public class RchatMessage
-{
-    protected Message Message;
-
-    public RchatMessage(Message message)
-    {
-        Message = message;
-    }
-
-    public HttpResponseMessage Send(HttpClient client)
-    {
-        SentrySdk.AddBreadcrumb(
-            category: "RchatMessage",
-            message: JsonSerializer.Serialize(Message, new JsonSerializerOptions { WriteIndented = true }),
-            type: "debug",
-            level: BreadcrumbLevel.Info);
-        return client.PostAsJsonAsync(string.Empty, Message).Result;
-    }
-}
+namespace GitlabChamp.Models;
 
 public struct Message
 {

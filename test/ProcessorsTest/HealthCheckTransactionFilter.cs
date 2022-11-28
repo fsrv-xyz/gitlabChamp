@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GitlabChamp.SentryProcessors;
+using GitlabChamp.Processors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sentry;
 using Sentry.Extensibility;

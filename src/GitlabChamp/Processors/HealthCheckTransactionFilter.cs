@@ -2,7 +2,7 @@ using System.Linq;
 using Sentry;
 using Sentry.Extensibility;
 
-namespace GitlabChamp.SentryProcessors;
+namespace GitlabChamp.Processors;
 
 public class HealthCheckTransactionFilter : ISentryTransactionProcessor
 {
@@ -12,12 +12,12 @@ public class HealthCheckTransactionFilter : ISentryTransactionProcessor
         if (transaction.Name.Contains("/-/health"))
         {
             // only drop health check transactions without errors
-            var unsuccessfullHealthchecks = transaction.Breadcrumbs
+            var failedHealthChecks = transaction.Breadcrumbs
                 .Where(x => x.Category.Contains("http") && x.Data?["status_code"] != "200")
                 .ToList()
                 .Count;
 
-            if (unsuccessfullHealthchecks == 0) return null;
+            if (failedHealthChecks == 0) return null;
         }
 
         return transaction;

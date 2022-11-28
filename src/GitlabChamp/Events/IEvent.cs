@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using GitlabChamp.Models;
 
 namespace GitlabChamp.Events;
 
