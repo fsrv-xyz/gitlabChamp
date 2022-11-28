@@ -25,7 +25,7 @@ public class MessageBody
 
     private IEvent Switch()
     {
-        switch (string.IsNullOrEmpty(EventName) ? EventType : EventName)
+        switch (DetermineEventIdentifier())
         {
             case "push":
                 return new Push();
@@ -34,7 +34,12 @@ public class MessageBody
             case "merge_request":
                 return new MergeRequest();
             default:
-                return new GenericEvent();
+                return new GenericEvent(DetermineEventIdentifier());
         }
+    }
+
+    private string DetermineEventIdentifier()
+    {
+        return string.IsNullOrEmpty(EventName) ? EventType : EventName;
     }
 }

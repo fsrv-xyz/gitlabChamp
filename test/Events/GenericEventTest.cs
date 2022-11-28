@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using GitlabChamp.Events;
@@ -9,7 +10,7 @@ namespace test.Events;
 [TestClass]
 public class GenericEventTest
 {
-    private readonly IEvent _genericEvent = new GenericEvent();
+    private readonly IEvent _genericEvent = new GenericEvent("test_event");
 
     [TestMethod]
     public void GenericEventParse()
@@ -18,8 +19,19 @@ public class GenericEventTest
         Assert.IsNotNull(input);
 
         var result = _genericEvent.Parse(input);
-        var expected = new Message { Text = "Generic Event" };
-
+        var expected = new Message
+        {
+            Text = ":gear: Generic Event **test_event**",
+            Attachments = new List<Attachment>
+            {
+                new()
+                {
+                    Title = "Data",
+                    Text = "```\n{\n  \"foo\": \"bar\"\n}\n```",
+                    Collapsed = true
+                }
+            }
+        };
         Assert.IsNotNull(result);
         Assert.AreEqual(JsonSerializer.Serialize(result), JsonSerializer.Serialize(expected));
     }
