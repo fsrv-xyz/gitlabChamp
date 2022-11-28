@@ -15,6 +15,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Prometheus;
 using Sentry;
 
 namespace GitlabChamp;
@@ -31,6 +32,7 @@ public class Program
             o.SampleRate = 1;
             o.AddDiagnosticSourceIntegration();
             o.AddTransactionProcessor(new HealthCheckTransactionFilter());
+            o.AddTransactionProcessor(new MetricTransactionFilter());
             o.Debug = true;
         });
 
@@ -60,6 +62,7 @@ public class Program
                 client.BaseAddress = new Uri(rocketchatUrl);
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
             })
+            .UseHttpClientMetrics()
             .AddPolicyHandler(Policy<HttpResponseMessage>
                 .Handle<HttpRequestException>()
                 .OrResult(msg => !msg.IsSuccessStatusCode)
@@ -69,7 +72,8 @@ public class Program
 
         // Add health checks
         builder.Services.AddHealthChecks()
-            .AddUrlGroup(new Uri(rocketchatUrl), null, HealthStatus.Unhealthy);
+            .AddUrlGroup(new Uri(rocketchatUrl), "healthcheck-rocketchat", HealthStatus.Unhealthy)
+            .ForwardToPrometheus();
 
         var app = builder.Build();
         app.Logger.Log(
@@ -77,6 +81,7 @@ public class Program
             $"Starting gitlabChamp version: {typeof(Program).Assembly.GetName().Version}"
         );
         app.UseSentryTracing();
+        app.UseHttpMetrics();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -89,6 +94,7 @@ public class Program
 
         // Map health check endpoint
         app.MapHealthChecks("/-/health");
+        app.MapMetrics("/-/metrics");
 
         // Map gitlab webhook endpoint
         app.MapPost("/webhook", (HttpContext httpContext, [FromBody] MessageBody messageBody) =>

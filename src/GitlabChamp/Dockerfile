@@ -11,5 +11,6 @@ WORKDIR /app
 COPY --from=build /app .
 
 EXPOSE 5000
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:5000
 ENTRYPOINT ["/app/GitlabChamp"]
-CMD ["--urls", "http://0.0.0.0:5000"]
