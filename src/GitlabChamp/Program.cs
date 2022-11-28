@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Sentry;
 
 namespace GitlabChamp;
@@ -52,14 +53,19 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddHttpClient("rocketchat", httpClient =>
-        {
-            httpClient.BaseAddress = new Uri(rocketchatUrl);
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
-        });
+            {
+                httpClient.BaseAddress = new Uri(rocketchatUrl);
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("gitlabChamp");
+            })
+            .AddPolicyHandler(Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
+                .OrResult(msg => !msg.IsSuccessStatusCode)
+                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            );
 
         // Add health checks
         builder.Services.AddHealthChecks()
-            .AddUrlGroup(new Uri(rocketchatUrl), "rocketchat", HealthStatus.Unhealthy);
+            .AddUrlGroup(new Uri(rocketchatUrl), null, HealthStatus.Unhealthy);
 
         var app = builder.Build();
         app.Logger.Log(

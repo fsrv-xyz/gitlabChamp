@@ -8,6 +8,7 @@ public class HealthCheckTransactionFilter : ISentryTransactionProcessor
 {
     public Transaction? Process(Transaction transaction)
     {
+        if (transaction.Status != SpanStatus.Ok) return transaction;
         if (transaction.Name.Contains("/-/health"))
         {
             // only drop health check transactions without errors
