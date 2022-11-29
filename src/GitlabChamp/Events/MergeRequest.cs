@@ -5,7 +5,7 @@ using GitlabChamp.Models;
 
 namespace GitlabChamp.Events;
 
-public class MergeRequest : IEvent
+public sealed class MergeRequest : IEvent
 {
     public Message Parse(JsonObject data)
     {

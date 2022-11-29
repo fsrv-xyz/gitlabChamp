@@ -34,7 +34,10 @@ public class MessageBody
             case "merge_request":
                 return new MergeRequest();
             default:
-                return new GenericEvent(DetermineEventIdentifier());
+                return new GenericEvent
+                {
+                    Identifier = DetermineEventIdentifier()
+                };
         }
     }
 

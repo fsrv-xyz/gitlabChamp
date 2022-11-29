@@ -10,7 +10,7 @@ namespace test.Events;
 [TestClass]
 public class GenericEventTest
 {
-    private readonly IEvent _genericEvent = new GenericEvent("test_event");
+    private readonly IEvent _genericEvent = new GenericEvent { Identifier = "test_event" };
 
     [TestMethod]
     public void GenericEventParse()

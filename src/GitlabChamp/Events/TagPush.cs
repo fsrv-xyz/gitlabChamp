@@ -6,7 +6,7 @@ using GitlabChamp.Models;
 
 namespace GitlabChamp.Events;
 
-public class TagPush : IEvent
+public sealed class TagPush : IEvent
 {
     public Message Parse(JsonObject data)
     {

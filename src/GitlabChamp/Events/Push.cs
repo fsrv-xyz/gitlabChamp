@@ -5,7 +5,7 @@ using GitlabChamp.Models;
 
 namespace GitlabChamp.Events;
 
-public class Push : IEvent
+public sealed class Push : IEvent
 {
     public Message Parse(JsonObject data)
     {

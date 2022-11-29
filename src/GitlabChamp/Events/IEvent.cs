@@ -10,14 +10,9 @@ public interface IEvent
     public Message Parse(JsonObject data);
 }
 
-public class GenericEvent : IEvent
+public sealed class GenericEvent : IEvent
 {
-    private readonly string _eventIdentifier;
-
-    public GenericEvent(string eventIdentifier)
-    {
-        _eventIdentifier = eventIdentifier;
-    }
+    public required string Identifier { init; private get; }
 
     public Message Parse(JsonObject data)
     {
@@ -31,7 +26,7 @@ public class GenericEvent : IEvent
 
         return new Message
         {
-            Text = $":gear: Generic Event **{_eventIdentifier}**",
+            Text = $":gear: Generic Event **{Identifier}**",
             Attachments = new List<Attachment> { new() { Title = "Data", Text = dataString, Collapsed = true } }
         };
     }
