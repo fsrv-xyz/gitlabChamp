@@ -16,6 +16,8 @@ public class MessageBody
 
     [JsonPropertyName("event_type")] public string EventType { get; set; } = null!;
 
+    [JsonPropertyName("object_kind")] public string ObjectKind { get; set; } = null!;
+
     [JsonExtensionData] [Required] public JsonObject DynamicData { get; set; }
 
     public Message ToMessage()
@@ -43,6 +45,10 @@ public class MessageBody
 
     private string DetermineEventIdentifier()
     {
-        return string.IsNullOrEmpty(EventName) ? EventType : EventName;
+        var eventIdentifier = string.IsNullOrWhiteSpace(EventName) ? EventType : EventName;
+        if (!string.IsNullOrWhiteSpace(ObjectKind) && string.IsNullOrWhiteSpace(eventIdentifier))
+            return ObjectKind;
+
+        return eventIdentifier;
     }
 }
