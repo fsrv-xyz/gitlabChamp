@@ -13,6 +13,49 @@ namespace test;
 public class MessageBodyTest
 {
     [TestMethod]
+    public void TestDetermineEventIdentifier()
+    {
+        var assertions = new Dictionary<MessageBody, string>
+        {
+            {
+                new MessageBody { EventName = "test1" },
+                "test1"
+            },
+            {
+                new MessageBody { EventType = "test2" },
+                "test2"
+            },
+            {
+                new MessageBody { ObjectKind = "test3" },
+                "test3"
+            },
+            {
+                new MessageBody { EventName = "test1", EventType = "test2", ObjectKind = "test3" },
+                "test1"
+            },
+            {
+                new MessageBody { EventName = "", EventType = "test2", ObjectKind = "test3" },
+                "test2"
+            },
+            {
+                new MessageBody { EventName = "", EventType = "", ObjectKind = "test3" },
+                "test3"
+            }
+        };
+
+        foreach (var (input, expected) in assertions)
+        {
+            var method = input
+                .GetType()
+                .GetMethod("DetermineEventIdentifier", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var result = method?.Invoke(input, null);
+
+            Assert.AreEqual(expected, result);
+        }
+    }
+
+    [TestMethod]
     public void TestSwitch()
     {
         var dict = new Dictionary<string, IEvent>
