@@ -21,9 +21,12 @@ public sealed class TagPush : IEvent
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
+        var timeline = data.Deserialize<GitlabHookData.BeforeAfter>();
+        var titleVerb = timeline.After.Equals("0000000000000000000000000000000000000000") ? "Deleted" : "New";
+
         var msg = new Message
         {
-            Text = $":label: New Tag \"{tagName}\" @ [{projectNameLinkable}]({project.Homepage})",
+            Text = $":label: {titleVerb} Tag \"{tagName}\" @ [{projectNameLinkable}]({project.Homepage})",
             Username = $"{user.Name} @ gitlab",
             IconUrl = user.Avatar
         };

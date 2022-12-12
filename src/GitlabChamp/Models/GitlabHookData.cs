@@ -5,6 +5,12 @@ namespace GitlabChamp.Models;
 
 public struct GitlabHookData
 {
+    public struct BeforeAfter
+    {
+        [JsonPropertyName("before")] public string Before { get; set; }
+        [JsonPropertyName("after")] public string After { get; set; }
+    }
+
     public struct Project
     {
         [JsonPropertyName("path_with_namespace")]
