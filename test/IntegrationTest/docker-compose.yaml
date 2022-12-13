@@ -1,0 +1,21 @@
+---
+services:
+  gitlabchamp:
+    container_name: ${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}
+    build: ../../src/GitlabChamp/
+    ports:
+      - 5000
+    networks:
+      - proxy
+    environment:
+      - rocketchat__integration_url=${REVIEW_ROCKETCHAT_INTEGRATION_URL}
+      - SENTRY_DSN=${REVIEW_SENTRY_DSN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}.wwwtest.org`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.services.whoami.loadbalancer.server.port=5000"
+networks:
+  proxy:
+    external: true
+
