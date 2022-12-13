@@ -2,7 +2,11 @@
 services:
   gitlabchamp:
     container_name: ${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}
-    build: ../../src/GitlabChamp/
+    build:
+      context: ../../src/GitlabChamp/
+      dockerfile: Dockerfile
+      args:
+        VERSION: 0.0.0
     ports:
       - 5000
     networks:
