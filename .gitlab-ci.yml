@@ -1,6 +1,7 @@
 ---
 stages:
   - test
+  - review
   - release
 
 build:
@@ -62,6 +63,11 @@ test-with-coverage:
       coverage_report:
         coverage_format: cobertura
         path: test/TestResults/*/coverage.cobertura.xml
+
+variables:
+  COMPOSE_FILE: "test/IntegrationTest/docker-compose.yaml"
+include:
+  - remote: https://gitlab.fsrv.services/fsrvcorp/container/integration-test-driver/-/raw/main/templates/basic.yaml
 
 semantic release:
   image: registry.fsrv.services/fsrvcorp/container/payipi:latest
