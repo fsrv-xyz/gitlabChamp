@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using GitlabChamp.Models;
@@ -16,9 +17,12 @@ public sealed class Push : IEvent
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
+        data.TryGetPropertyValue("ref", out var refName);
+        var branch = refName?.ToString().Split('/').Last();
+
         var msg = new Message
         {
-            Text = $":pushpin: Push Event @ [{projectNameLinkable}]({project.Homepage})",
+            Text = $":pushpin: Push Event on \"{branch}\" @ [{projectNameLinkable}]({project.Homepage})",
             Username = $"{user.Name} @ gitlab",
             IconUrl = user.Avatar
         };
