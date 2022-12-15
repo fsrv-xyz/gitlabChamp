@@ -1,5 +1,5 @@
 {
-  "text": ":pushpin: Push Event @ [mike/diaspora](http://example.com/mike/diaspora)",
+  "text": ":pushpin: Push Event on \"master\" @ [mike/diaspora](http://example.com/mike/diaspora)",
   "username": "John Smith @ gitlab",
   "icon_url": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
   "attachments": [

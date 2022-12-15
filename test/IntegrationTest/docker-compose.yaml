@@ -1,7 +1,7 @@
 ---
 services:
   gitlabchamp:
-    container_name: ${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}
+    container_name: ${CI_COMMIT_REF_SLUG}.${CI_COMMIT_SHORT_SHA}.${CI_PROJECT_NAME}
     build:
       context: ../../src/GitlabChamp/
       dockerfile: Dockerfile
@@ -16,9 +16,9 @@ services:
       - SENTRY_DSN=${REVIEW_SENTRY_DSN}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}.wwwtest.org`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
-      - "traefik.http.services.whoami.loadbalancer.server.port=5000"
+      - "traefik.http.routers.gitlabchamp-${CI_COMMIT_SHORT_SHA}.rule=Host(`${CI_COMMIT_REF_SLUG}.${CI_PROJECT_NAME}.wwwtest.org`)"
+      - "traefik.http.routers.gitlabchamp-${CI_COMMIT_SHORT_SHA}.entrypoints=web"
+      - "traefik.http.services.gitlabchamp-${CI_COMMIT_SHORT_SHA}.loadbalancer.server.port=5000"
 networks:
   proxy:
     external: true

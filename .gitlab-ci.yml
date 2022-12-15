@@ -66,6 +66,7 @@ test-with-coverage:
 
 variables:
   COMPOSE_FILE: "test/IntegrationTest/docker-compose.yaml"
+  COMPOSE_UP_PARAMETERS: "--build --force-recreate --remove-orphans"
 include:
   - remote: https://gitlab.fsrv.services/fsrvcorp/container/integration-test-driver/-/raw/main/templates/basic.yaml
 
