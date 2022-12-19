@@ -62,7 +62,8 @@ public class MessageBodyTest
         {
             { "push", new Push() },
             { "mergeRequest", new MergeRequest() },
-            { "tagPush", new TagPush() }
+            { "tagPush", new TagPush() },
+            { "issue", new Issue() }
         };
 
         dict.ToList().ForEach(x =>
