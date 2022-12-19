@@ -35,6 +35,8 @@ public class MessageBody
                 return new TagPush();
             case "merge_request":
                 return new MergeRequest();
+            case "issue":
+                return new Issue();
             default:
                 return new GenericEvent
                 {
