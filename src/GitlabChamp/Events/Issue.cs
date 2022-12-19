@@ -11,17 +11,17 @@ public class Issue : IEvent
     {
         var user = data["user"].Deserialize<GitlabHookData.User>();
         var project = data["project"].Deserialize<GitlabHookData.Project>();
+        var issue = data["object_attributes"].Deserialize<GitlabHookData.Issue>();
 
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
-        var issueId = data["object_attributes"]?["iid"]?.ToString() ?? "unknown";
-        var issueUrl = $"https://gitlab.com/{projectNameLinkable}/-/issues/{issueId}";
+        var issueUrl = $"https://gitlab.com/{projectNameLinkable}/-/issues/{issue.Iid}";
 
-        var issueTitleLink = $"[#{issueId}]({issueUrl})";
+        var issueTitleLink = $"[#{issue.Iid}]({issueUrl})";
         var projectTitleLink = $"[{projectNameLinkable}]({project.Homepage})";
 
-        var action = data["object_attributes"]?["action"]?.ToString() ?? "unknown";
+        var action = issue.Action ?? "unknown";
 
         var icon = action switch
         {
@@ -49,12 +49,12 @@ public class Issue : IEvent
                         new()
                         {
                             Title = "Title",
-                            Value = data["object_attributes"]?["title"]?.ToString() ?? "No title"
+                            Value = issue.Title != "" ? issue.Title : "*No title provided*"
                         },
                         new()
                         {
                             Title = "Description",
-                            Value = data["object_attributes"]?["description"]?.ToString() ?? "No description"
+                            Value = issue.Description != "" ? issue.Description : "*No description provided*"
                         }
                     }
                 }

@@ -40,6 +40,14 @@ public struct GitlabHookData
         [JsonExtensionData] public JsonObject DynamicData { get; set; }
     }
 
+    public struct Issue
+    {
+        [JsonPropertyName("title")] public string Title { get; set; }
+        [JsonPropertyName("description")] public string Description { get; set; }
+        [JsonPropertyName("iid")] public uint Iid { get; set; }
+        [JsonPropertyName("action")] public string Action { get; set; }
+    }
+
     public struct MergeRequestAttributes
     {
         [JsonPropertyName("url")] public string Url { get; set; }

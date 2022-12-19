@@ -1,0 +1,23 @@
+{
+  "text": ":closed_book: Issue close [#3](https://gitlab.com/bonsai-oss/tools/traefik-weight-control/-/issues/3) @ [bonsai-oss/tools/traefik-weight-control](https://gitlab.com/bonsai-oss/tools/traefik-weight-control)",
+  "username": "Florian Bauer @ gitlab",
+  "icon_url": "https://gitlab.com/uploads/-/system/user/avatar/8100639/avatar.png",
+  "attachments": [
+    {
+      "title": "Details",
+      "collapsed": true,
+      "fields": [
+        {
+          "title": "Title",
+          "value": "environment variable configuration",
+          "short": false
+        },
+        {
+          "title": "Description",
+          "value": "*No description provided*",
+          "short": false
+        }
+      ]
+    }
+  ]
+}
