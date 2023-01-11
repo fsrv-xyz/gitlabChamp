@@ -20,9 +20,14 @@ public sealed class Push : IEvent
         data.TryGetPropertyValue("ref", out var refName);
         var branch = refName?.ToString().Split('/').Last();
 
+        var timeline = data.Deserialize<GitlabHookData.BeforeAfter>();
+        var title = timeline.After.Equals("0000000000000000000000000000000000000000")
+            ? ":wastebasket: Deleted branch"
+            : ":pushpin: Push Event on";
+
         var msg = new Message
         {
-            Text = $":pushpin: Push Event on \"{branch}\" @ [{projectNameLinkable}]({project.Homepage})",
+            Text = $"{title} \"{branch}\" @ [{projectNameLinkable}]({project.Homepage})",
             Username = $"{user.Name} @ gitlab",
             IconUrl = user.Avatar
         };
