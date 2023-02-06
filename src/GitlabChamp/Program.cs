@@ -66,9 +66,9 @@ public class Program
             .AddPolicyHandler(Policy<HttpResponseMessage>
                 .Handle<HttpRequestException>()
                 .OrResult(msg => !msg.IsSuccessStatusCode)
-                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                .WaitAndRetryAsync(6,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(new Random().Next(2, 10), retryAttempt)))
             );
-
 
         // Add health checks
         builder.Services.AddHealthChecks()

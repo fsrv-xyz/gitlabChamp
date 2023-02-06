@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -34,7 +35,7 @@ public class RocketChatClient : IRocketChatClient
                 Success = response.IsSuccessStatusCode
             };
         }
-        catch (HttpRequestException e)
+        catch (Exception e)
         {
             SentrySdk.CaptureException(e);
             result = new WebhookResponseMessage
