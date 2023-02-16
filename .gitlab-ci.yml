@@ -69,6 +69,8 @@ variables:
   COMPOSE_UP_PARAMETERS: "--build --force-recreate --remove-orphans"
 include:
   - remote: https://gitlab.fsrv.services/fsrvcorp/container/integration-test-driver/-/raw/main/templates/basic.yaml
+    rules: 
+      - if: $CI_PIPELINE_SOURCE != "merge_request_event"
 
 semantic release:
   image: registry.fsrv.services/fsrvcorp/container/payipi:latest
