@@ -76,6 +76,9 @@ public class Program
             .ForwardToPrometheus();
 
         var app = builder.Build();
+        //app.UseHttpLogging();
+        app.UseW3CLogging();
+
         app.Logger.Log(
             LogLevel.Information,
             $"Starting gitlabChamp version: {typeof(Program).Assembly.GetName().Version}"
@@ -90,7 +93,6 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpLogging();
 
         // Map health check endpoint
         app.MapHealthChecks("/-/health");
