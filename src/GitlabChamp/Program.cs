@@ -55,9 +55,6 @@ public class Program
         if (rocketchatUrl == null) throw new Exception("rocketchat:integration_url is not set");
 
         // Add services to the container.
-        builder.Services.AddAuthorization();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
