@@ -36,6 +36,11 @@ public class Program
             o.Debug = true;
         });
 
+        builder.Services.AddLogging(logging =>
+        {
+            logging.AddSimpleConsole(formatterOptions => { formatterOptions.SingleLine = true; });
+        });
+
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
 
