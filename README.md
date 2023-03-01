@@ -2,8 +2,8 @@
 
 *rocketchat message automation for gitlab system hooks*
 
-![](https://gitlab.fsrv.services/fsrvcorp/integration/gitlabchamp/badges/main/pipeline.svg)
-![](https://gitlab.fsrv.services/fsrvcorp/integration/gitlabchamp/badges/main/coverage.svg)
+![](https://ref.ci/fsrvcorp/integration/gitlabchamp/badges/main/pipeline.svg)
+![](https://ref.ci/fsrvcorp/integration/gitlabchamp/badges/main/coverage.svg)
 
 
 #### useful links
