@@ -16,9 +16,7 @@ public class Issue : IEvent
         // replace underscores with dashes due to https://github.com/RocketChat/Rocket.Chat/issues/15347
         var projectNameLinkable = project.PathWithNamespace.Replace("_", "-");
 
-        var issueUrl = $"https://gitlab.com/{projectNameLinkable}/-/issues/{issue.Iid}";
-
-        var issueTitleLink = $"[#{issue.Iid}]({issueUrl})";
+        var issueTitleLink = $"[#{issue.Iid}]({issue.Url})";
         var projectTitleLink = $"[{projectNameLinkable}]({project.Homepage})";
 
         var action = issue.Action ?? "unknown";
