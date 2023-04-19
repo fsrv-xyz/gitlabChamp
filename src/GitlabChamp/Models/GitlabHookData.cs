@@ -46,6 +46,7 @@ public struct GitlabHookData
         [JsonPropertyName("description")] public string Description { get; set; }
         [JsonPropertyName("iid")] public uint Iid { get; set; }
         [JsonPropertyName("action")] public string Action { get; set; }
+        [JsonPropertyName("url")] public string Url { get; set; }
     }
 
     public struct MergeRequestAttributes
