@@ -85,7 +85,7 @@ include:
       - if: $CI_PIPELINE_SOURCE != "merge_request_event"
 
 semantic release:
-  image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:7173af5a6a66bf07d2951e6ff559a74964fcad47511e9941b971c7b8eabeab43
+  image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:9f6500bcb31b9fb1bc0dcd23fad8b99441bf0a041b62b54ff8ac2f360e23620e
   stage: release
   variables:
     GIT_STRATEGY: clone
