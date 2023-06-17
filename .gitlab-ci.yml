@@ -75,14 +75,37 @@ test-with-coverage:
         coverage_format: cobertura
         path: test/TestResults/*/coverage.cobertura.xml
 
-variables:
-  COMPOSE_FILE: "test/IntegrationTest/docker-compose.yaml"
-  COMPOSE_UP_PARAMETERS: "--build --force-recreate --remove-orphans"
+container build:
+  stage: review
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}/src/GitlabChamp"
+      --dockerfile "${CI_PROJECT_DIR}/src/GitlabChamp/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
+      --build-arg "VERSION=0.0.0"
+
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
-  - remote: https://ref.ci/fsrvcorp/container/integration-test-driver/-/raw/main/templates/basic.yaml
-    rules: 
-      - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+  - project: fsrvcorp/ci-templates
+    file:
+      - kubernetes-review.yaml
+
+variables:
+  KUBE_BASE_DIR: "${CI_PROJECT_DIR}/test/IntegrationTest/.kube"
+
+review::start:
+  stage: review
+  needs:
+    - job: container build
+      artifacts: false
+review::stop:
+  stage: review
 
 semantic release:
   image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:9f6500bcb31b9fb1bc0dcd23fad8b99441bf0a041b62b54ff8ac2f360e23620e
