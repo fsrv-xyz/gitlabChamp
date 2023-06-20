@@ -108,7 +108,7 @@ review::stop:
   stage: review
 
 semantic release:
-  image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:efd643bb245555775cee5b2f66ce8fa75c8e4475ed3712d49156b41c3654e135
+  image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:5da104dc09967ff5436a326b848b1c1ee2ff6f642613b56dcfdb64a7dcbd4ba3
   stage: release
   variables:
     GIT_STRATEGY: clone
