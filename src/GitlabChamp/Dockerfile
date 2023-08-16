@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0@sha256:746fb86d08ca172ae0880c585ea86d8682e297fca5e5ff269ebd31d793d050d3 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0@sha256:aa7bb9055ba6bcb110fbac87a63f96ecd62438b0ed99b77ac260c48b924bfe62 AS build
 ARG RELEASE="linux-x64"
 ARG VERSION="undefined"
 WORKDIR /source
