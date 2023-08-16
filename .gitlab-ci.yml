@@ -6,7 +6,7 @@ stages:
   - security
 
 build:
-  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:aa7bb9055ba6bcb110fbac87a63f96ecd62438b0ed99b77ac260c48b924bfe62"
+  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:926b9337622ccc594ed051d3559f1c4544686c9fd5f4656f09d1fe37d9a5ace2"
   stage: test
   before_script:
     - dotnet restore src/GitlabChamp
@@ -47,7 +47,7 @@ container_scanning:
     - if: $CI_COMMIT_TAG
 
 test-with-coverage:
-  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:aa7bb9055ba6bcb110fbac87a63f96ecd62438b0ed99b77ac260c48b924bfe62"
+  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:926b9337622ccc594ed051d3559f1c4544686c9fd5f4656f09d1fe37d9a5ace2"
   stage: test
   before_script:
     - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
