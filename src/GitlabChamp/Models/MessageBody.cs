@@ -18,7 +18,7 @@ public class MessageBody
 
     [JsonPropertyName("object_kind")] public string ObjectKind { get; set; } = null!;
 
-    [JsonExtensionData] [Required] public JsonObject DynamicData { get; set; }
+    [JsonExtensionData][Required] public JsonObject DynamicData { get; set; }
 
     public Message ToMessage()
     {
