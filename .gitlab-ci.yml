@@ -1,124 +1,50 @@
 ---
 stages:
   - test
+  - build
   - review
   - release
-  - security
-
-build:
-  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:926b9337622ccc594ed051d3559f1c4544686c9fd5f4656f09d1fe37d9a5ace2"
-  stage: test
-  before_script:
-    - dotnet restore src/GitlabChamp
-  script:
-    - dotnet publish -c Release src/GitlabChamp -o build/
-  artifacts: 
-    paths:
-      - build/
-    expire_in: 2 days
-
-docker build:
-  stage: release
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [ "" ]
-  before_script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-  only:
-    - tags
-  script:
-    - >-
-      /kaniko/executor \
-        --context "${CI_PROJECT_DIR}/src/GitlabChamp" \
-        --dockerfile "./Dockerfile" \
-        --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" \
-        --destination "${CI_REGISTRY_IMAGE}:latest" \
-        --build-arg "VERSION=$(echo $CI_COMMIT_TAG | sed 's/v//g')"
-
-container_scanning:
-  stage: security
-  variables:
-    GIT_STRATEGY: fetch
-    CS_DOCKERFILE_PATH: ${CI_PROJECT_DIR}/src/GitlabChamp/Dockerfile
-    DOCKER_IMAGE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
-  needs: ["docker build"]
-  rules:
-    - if: $CI_COMMIT_TAG
-
-test-with-coverage:
-  image: "mcr.microsoft.com/dotnet/sdk:7.0@sha256:926b9337622ccc594ed051d3559f1c4544686c9fd5f4656f09d1fe37d9a5ace2"
-  stage: test
-  before_script:
-    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-  script: 
-    - >-
-      dotnet test \
-        -c Debug \
-        --collect:"XPlat Code Coverage" \
-        --test-adapter-path:. \
-        --logger:"junit;LogFilePath=./junit/junit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
-        -p:CollectCoverage=true
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:Html;
-    - cat ./Reports_Coverage/Summary.txt
-    - echo 'End Summary'
-  coverage: /Line coverage[\s\S].+%/
-  artifacts:
-    paths:
-      - ./**/*test-result.xml
-      - ./**/*coverage.cobertura.xml
-    reports:
-      junit:
-        - test/junit/junit-test-result.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: test/TestResults/*/coverage.cobertura.xml
-
-container build:
-  stage: review
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [ "" ]
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}/src/GitlabChamp"
-      --dockerfile "${CI_PROJECT_DIR}/src/GitlabChamp/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
-      --build-arg "VERSION=0.0.0"
 
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
-  - project: fsrvcorp/ci-templates
-    file:
-      - kubernetes-review.yaml
+  - { project: fsrvcorp/templates, file: templates/language/dotnet.yml, ref: 1.0.2 }
+  - { project: fsrvcorp/templates, file: templates/release/kaniko.yml, ref: 1.0.2 }
+  - { project: fsrvcorp/templates, file: templates/release/semver.yml, ref: 1.0.2 }
+  - { project: fsrvcorp/ci-templates, file: kubernetes-review.yaml }
 
 variables:
   KUBE_BASE_DIR: "${CI_PROJECT_DIR}/test/IntegrationTest/.kube"
+  KANIKO_ARGS: --context ${CI_PROJECT_DIR}/src/GitlabChamp --destination ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} --build-arg REPO_VERSION=${REPO_VERSION}
+  CONTAINER_FILE_LOCATION: ${CI_PROJECT_DIR}/src/GitlabChamp/Dockerfile
+  SEMVER_PREFIX: "v"
+
+.dotnet_template_defaults:
+  stage: test
+.kaniko_template_defaults:
+  stage: build
+  needs:
+    - job: pre-kaniko
+      artifacts: true
+.semver_template_defaults:
+  stage: release
+  
+pre-kaniko:
+  image: alpine:latest
+  stage: build
+  before_script:
+    - apk add git
+  script: 
+    - echo "REPO_VERSION=$(git describe --tags --always)" > version.env
+  artifacts: 
+    reports:
+      dotenv: version.env
+
 
 review::start:
   stage: review
   needs:
-    - job: container build
+    - job: kaniko-build
       artifacts: false
 review::stop:
   stage: review
-
-semantic release:
-  image: registry.fsrv.services/fsrvcorp/container/payipi:latest@sha256:af1c2d986776074d2e4316c470f9475a73bad541206c5b8a4c5a89b2f4520866
-  stage: release
-  variables:
-    GIT_STRATEGY: clone
-    GIT_DEPTH: 0
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    - get-next-version -f json
-    - VERSION="$(get-next-version -f json | jq -r 'select(.hasNextVersion==true) | .version')"
-    - echo $VERSION
-    - test -z "$VERSION" || curl --silent --request POST --header "PRIVATE-TOKEN:${CI_BOT_TOKEN}" "https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/repository/tags?tag_name=v${VERSION}&ref=${CI_DEFAULT_BRANCH}" | jq
 
 
