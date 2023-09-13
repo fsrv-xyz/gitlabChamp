@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0@sha256:bdcfb498261ca18f023ac67615d814ea743aa3288eb880855fa2eb86c6313ccc AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:07414cffa075d67d97a26ad13b0838d9ecb0e22df3384667881ac7a741c472aa AS build
 ARG RELEASE="linux-x64"
 ARG REPO_VERSION=${REPO_VERSION:-0.0.0}
 RUN echo "Building version ${REPO_VERSION} for ${RELEASE}"
