@@ -57,6 +57,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddHttpLogging(o => { });
 
         builder.Services.AddSingleton<IRocketChatClient, RocketChatClient>();
         builder.Services.AddHttpClient<IRocketChatClient, RocketChatClient>(client =>
