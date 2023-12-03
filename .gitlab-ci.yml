@@ -6,9 +6,9 @@ stages:
   - release
 
 include:
-  - { project: fsrvcorp/templates, file: templates/language/dotnet.yml, ref: 1.0.4 }
-  - { project: fsrvcorp/templates, file: templates/release/kaniko.yml, ref: 1.0.4 }
-  - { project: fsrvcorp/templates, file: templates/release/semver.yml, ref: 1.0.4 }
+  - { project: fsrvcorp/templates, file: templates/language/dotnet.yml, ref: 1.0.5 }
+  - { project: fsrvcorp/templates, file: templates/release/kaniko.yml, ref: 1.0.5 }
+  - { project: fsrvcorp/templates, file: templates/release/semver.yml, ref: 1.0.5 }
   - { project: fsrvcorp/ci-templates, file: kubernetes-review.yaml }
 
 variables:
