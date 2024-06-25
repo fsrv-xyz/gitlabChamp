@@ -35,7 +35,8 @@ pre-kaniko:
   before_script:
     - apk add git
   script: 
-    - echo "REPO_VERSION=$(git describe --tags --always)" > version.env
+    - git pull origin $CI_COMMIT_REF_NAME --tags
+    - echo "REPO_VERSION=$(git tag | sort -rV | head -1)-${CI_COMMIT_SHORT_SHA}" > version.env
   artifacts: 
     reports:
       dotenv: version.env
