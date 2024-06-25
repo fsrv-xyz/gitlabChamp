@@ -21,7 +21,7 @@
         <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="8.2.1" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.41.4" />
         <PackageReference Include="Sentry.DiagnosticSource" Version="3.41.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
 </Project>
