@@ -6,7 +6,7 @@ WORKDIR /source
 COPY . .
 RUN dotnet publish -c Release -r $RELEASE -o /app -p:Version=${REPO_VERSION#v}
 
-FROM debian:stable-slim@sha256:fffe16098bcefa876d01862a61f8f30ef4292c9485940e905d41a15d8459828b as runtime
+FROM debian:stable-slim@sha256:32f6d6f046ee9b4c31b359e695a1f0174e85846148f058f3fecad9233e88ff6a as runtime
 RUN apt update && apt install -y ca-certificates
 WORKDIR /app
 COPY --from=build /app .
